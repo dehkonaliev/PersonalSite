@@ -12,6 +12,7 @@ class CustomUser(models.Model):
 class Activity(models.Model):
     title = models.CharField(max_length=200)
     context = models.CharField(max_length=2000)
+    order = models.PositiveIntegerField(default=0)
     
 class Resume(models.Model):
     location = models.CharField(max_length=300)
