@@ -14,6 +14,9 @@ class Activity(models.Model):
     context = models.CharField(max_length=2000)
     order = models.PositiveIntegerField(default=0)
     
+    def __str__(self):
+        return self.title
+    
 class Resume(models.Model):
     location = models.CharField(max_length=300)
     summary = models.CharField(max_length=3000)
@@ -25,6 +28,7 @@ class Resume(models.Model):
     telegram_url = models.URLField(null=True, blank=True)
     
     
+    
 class Experience(models.Model):
     job = models.CharField(max_length=200)
     company = models.CharField(max_length=200)
@@ -32,11 +36,25 @@ class Experience(models.Model):
     from_date = models.DateField()
     to_date = models.DateField()
     location = models.CharField(max_length=300, blank=True, null=True)
-    
-class Skill(models.Model):
-    name = models.CharField(max_length=50)
-    level = models.IntegerField()
     order = models.PositiveIntegerField(default=0)
+    
+    def __str__(self):
+        return self.company
+    
+class SkillType(models.Model):
+    name = models.CharField(max_length=100)
+    order = models.PositiveIntegerField(default=0)
+    
+    def __str__(self):
+        return self.name
+
+class Skill(models.Model):
+    type = models.ForeignKey(SkillType, on_delete=models.CASCADE, related_name='skills')
+    name = models.CharField(max_length=50)
+    order = models.PositiveIntegerField(default=0)
+    
+    def __str__(self):
+        return self.name
     
     
 class Education(models.Model):
@@ -46,5 +64,9 @@ class Education(models.Model):
     to_date = models.DateField()
     what_learnt = models.CharField(max_length=2000)
     certification = models.FileField(upload_to='certifications/', blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)
+    
+    def __str__(self):
+        return self.edu_place
     
     
