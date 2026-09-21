@@ -13,3 +13,90 @@
   --font-display: "Fraunces", ui-serif, Georgia, serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
+
+.rich-text {
+  line-height: 1.7;
+  color: var(--color-slate);
+}
+
+.rich-text > *:first-child {
+  margin-top: 0;
+}
+
+.rich-text p {
+  margin: 0 0 1rem;
+}
+
+.rich-text img {
+  max-width: 100%;
+  height: auto;
+}
+
+.rich-text h1,
+.rich-text h2,
+.rich-text h3,
+.rich-text h4 {
+  font-family: var(--font-display);
+  color: var(--color-ink);
+  font-weight: 700;
+  margin: 1.75rem 0 0.5rem;
+  line-height: 1.3;
+}
+
+.rich-text h1 {
+  font-size: 2em;
+}
+
+.rich-text h2 {
+  font-size: 1.5em;
+}
+
+.rich-text h3 {
+  font-size: 1.25em;
+}
+
+.rich-text h4 {
+  font-size: 1.1em;
+}
+
+.rich-text ul,
+.rich-text ol {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+}
+
+.rich-text ul {
+  list-style: disc;
+}
+
+.rich-text ol {
+  list-style: decimal;
+}
+
+.rich-text li {
+  margin-bottom: 0.25rem;
+}
+
+.rich-text a {
+  color: var(--color-signal);
+  text-decoration: underline;
+}
+
+.rich-text blockquote {
+  border-left: 2px solid var(--color-line);
+  padding-left: 1rem;
+  font-style: italic;
+  margin: 0 0 1rem;
+}
+
+.rich-text pre {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 0 0 1rem;
+}
+
+.rich-text code {
+  font-size: 0.9em;
+}

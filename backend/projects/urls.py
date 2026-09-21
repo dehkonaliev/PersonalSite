@@ -4,8 +4,8 @@ from .views import ProjectViewset
 
 
 router = DefaultRouter()
-router.register("projects", ProjectViewset, basename="project")
+router.register("", ProjectViewset, basename="project")
 
 urlpatterns = [
-    path("api/", include(router.urls)),
+    path("", include(router.urls)),
 ]

@@ -1,44 +1,41 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Layout from "../components/Layout";
+import Skeleton from "../components/Skeleton";
 import { ArrowUpRight } from "lucide-react";
 import { FaGithub } from "react-icons/fa6";
+import { api, type Project } from "../lib/api";
 
-interface Project {
-  slug: string;
-  title: string;
-  year: string;
-  stack: string[];
-  description: string;
-  repo?: string;
-  demo?: string;
+const projectYear = (iso: string) => new Date(iso).getFullYear();
+
+function techNames(techs: Project["technologies"]): string[] {
+  const names: string[] = [];
+  for (const tech of techs) {
+    if (typeof tech === "string") {
+      if (tech) names.push(tech);
+    } else if (tech && typeof tech.name === "string") {
+      names.push(tech.name);
+    }
+  }
+  return names;
 }
 
-// Replace with your real projects. Each one gets equal weight — resist
-// the urge to pad this with more than you can speak to in an interview.
-// `slug` will route to /projects/:slug once the detail page exists.
-const PROJECTS: Project[] = [
-  {
-    slug: "project-one",
-    title: "Project title",
-    year: "2026",
-    stack: ["Django REST", "PostgreSQL", "React"],
-    description:
-      "One or two sentences on the problem this solved and the decision you're proudest of.",
-    repo: "https://github.com/dehkonaliev/test",
-    demo: "",
-  },
-  {
-    slug: "project-two",
-    title: "Project title",
-    year: "2025",
-    stack: ["Python", "Telegram Bot API"],
-    description:
-      "One or two sentences on the problem this solved and the decision you're proudest of.",
-    repo: "",
-    demo: "",
-  },
-];
-
 export default function Projects() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api
+      .projects()
+      .then(setProjects)
+      .catch((err) => {
+        console.error(err);
+        setError(true);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <Layout active="Projects">
       <section className="max-w-content mx-auto px-6 md:px-10 pt-16 pb-10 border-b border-line">
@@ -50,53 +47,79 @@ export default function Projects() {
       </section>
 
       <section className="max-w-content mx-auto px-6 md:px-10">
-        {PROJECTS.map((project, i) => (
+        {loading && (
+          <div className="py-10">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="py-10 border-b border-line grid md:grid-cols-[1fr_2fr] gap-4 md:gap-10"
+              >
+                <div className="space-y-3">
+                  <Skeleton className="h-7 w-44" />
+                  <Skeleton className="h-4 w-20" />
+                </div>
+                <div className="space-y-3">
+                  <Skeleton className="h-4 w-full max-w-xl" />
+                  <Skeleton className="h-4 w-3/4 max-w-lg" />
+                  <Skeleton className="h-4 w-1/2 max-w-md" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {!loading && error && (
+          <p className="py-10 text-slate">Could not load projects.</p>
+        )}
+        {!loading && !error && projects.length === 0 && (
+          <p className="py-10 text-slate">
+            Nothing published yet — check back soon.
+          </p>
+        )}
+        {!loading && projects.map((project, i) => (
           <div
-            key={project.title + i}
+            key={project.slug + i}
             className="py-10 border-b border-line grid md:grid-cols-[1fr_2fr] gap-4 md:gap-10"
           >
             <div>
               <h2 className="font-display text-2xl mb-1">{project.title}</h2>
-              <p className="text-sm text-slate">{project.year}</p>
+              <p className="text-sm text-slate">
+                {projectYear(project.created_at)}
+              </p>
             </div>
 
             <div>
               <p className="text-slate leading-relaxed mb-4 max-w-xl">
-                {project.description}
+                {project.summary}
               </p>
 
-              <div className="flex flex-wrap gap-2 mb-4">
-                {project.stack.map((tech) => (
-                  <span
-                    key={tech}
-                    className="text-xs border border-line px-2.5 py-1 text-slate"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
+              {techNames(project.technologies).length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {techNames(project.technologies).map((tech) => (
+                    <span
+                      key={tech}
+                      className="text-xs border border-line px-2.5 py-1 text-slate"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               <div className="flex flex-wrap items-center gap-5">
-                <a
-                  href={`/projects/${project.slug}`}
+                <Link
+                  to={`/projects/${project.slug}`}
                   className="inline-flex items-center gap-1.5 border border-line text-sm px-4 py-2 hover:border-ink transition-colors"
                 >
                   View details <ArrowUpRight size={15} />
-                </a>
-                {project.repo && (
+                </Link>
+                {project.github_link && (
                   <a
-                    href={project.repo}
+                    href={project.github_link}
+                    target="_blank"
+                    rel="noreferrer"
                     className="inline-flex items-center gap-1.5 text-sm text-signal hover:underline"
                   >
                     <FaGithub size={15} /> Code
-                  </a>
-                )}
-                {project.demo && (
-                  <a
-                    href={project.demo}
-                    className="inline-flex items-center gap-1.5 text-sm text-signal hover:underline"
-                  >
-                    Live demo <ArrowUpRight size={15} />
                   </a>
                 )}
               </div>

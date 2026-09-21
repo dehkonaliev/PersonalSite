@@ -1,4 +1,5 @@
 from django.db import models
+from projects.models import Technology
 
 class CustomUser(models.Model):
     first_name = models.CharField(max_length=30)
@@ -26,6 +27,8 @@ class Resume(models.Model):
     github_url = models.URLField(blank=True, null=True)
     linkedin_url = models.URLField(null=True, blank=True)
     telegram_url = models.URLField(null=True, blank=True)
+    image = models.ImageField(upload_to='portraits/', null=True, blank=True)
+    
     
     
     
@@ -63,10 +66,25 @@ class Education(models.Model):
     from_date = models.DateField()
     to_date = models.DateField()
     what_learnt = models.CharField(max_length=2000)
-    certification = models.FileField(upload_to='certifications/', blank=True, null=True)
+    certification = models.FileField(upload_to='diplomas/', blank=True, null=True)
     order = models.PositiveIntegerField(default=0)
     
     def __str__(self):
         return self.edu_place
+    
+
+class Certificates(models.Model):
+    name = models.CharField(max_length=500)
+    issued_by = models.CharField(max_length=500, blank=True, null=True)
+    what_learnt = models.CharField(max_length=3000)
+    link = models.URLField(blank=True, null=True)
+    file = models.FileField(upload_to='certificates/', blank=True, null=True)
+    photo_overview = models.ImageField(upload_to='certificate_overviews/', blank=True, null=True)
+    technologies = models.ManyToManyField(Technology, related_name='cert_technologies')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.name
+    
     
     

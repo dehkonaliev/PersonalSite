@@ -1,11 +1,12 @@
 from rest_framework import serializers
-from .models import CustomUser, Skill, SkillType, Activity, Experience, Education, Resume
+from .models import CustomUser, Skill, SkillType, Activity, Experience, Education, Resume, Certificates
+from projects.serializers import TechnologySerializer
 
 
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        fields = ['name', 'title']
+        fields = ['title', 'context']
 
 class HomeDataSerializer(serializers.ModelSerializer):
     activities = serializers.SerializerMethodField()
@@ -13,7 +14,7 @@ class HomeDataSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = [
             'first_name', 'last_name', 'job_title',
-            'heading_activity', 'home_content', 'off_board',
+            'heading_activity', 'home_context', 'off_board',
             'photo', 'activities'
         ]
         
@@ -37,7 +38,7 @@ class ResumeSerializer(serializers.ModelSerializer):
         model = Resume
         fields = [
             'location', 'summary', 'email', 'resume_file', 'website_url',
-            'github_url', 'linkedin_url', 'telegram_url'
+            'github_url', 'linkedin_url', 'telegram_url', 'image'
         ]
     
 
@@ -54,5 +55,14 @@ class SkillsSerializer(serializers.ModelSerializer):
         
     def get_skills(self, obj):
         skills = obj.skills.all().order_by('order')
-        return SkillSerializer(skills, many=True).data   
+        return SkillSerializer(skills, many=True).data
+    
+class CertificateSerializer(serializers.ModelSerializer):
+    technologies = serializers.SerializerMethodField()
+    class Meta:
+        model = Certificates
+        fields = ['id', 'name', 'issued_by', 'what_learnt', 'created_at', 'link', 'file', 'photo_overview', 'technologies']
+        
+    def get_technologies(self, obj):
+        return TechnologySerializer(obj.technologies.all(), many=True).data
         

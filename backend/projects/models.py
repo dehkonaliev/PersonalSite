@@ -5,6 +5,9 @@ from ckeditor_uploader.fields import RichTextUploadingField
 class Technology(models.Model):
     name = models.CharField(max_length=50, unique=True)
     
+    def __str__(self):
+        return self.name
+    
 class Project(models.Model):
     title = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -24,10 +27,6 @@ class Project(models.Model):
                 n += 1
             self.slug = f"{slug}-{n}"
         return super().save()
-    
-class ProjectImage(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='projects/')
     
 
     

@@ -12,6 +12,14 @@ const NAV_LINKS = [
   { label: "Blog", href: "/blog" },
 ];
 
+const FOOTER_TEXT =
+  import.meta.env.VITE_FOOTER_TEXT ||
+  "Tashkent, Uzbekistan — open to backend & ML roles.";
+const EMAIL = import.meta.env.VITE_EMAIL || "you@example.com";
+const GITHUB_URL = import.meta.env.VITE_GITHUB_URL || "";
+const LINKEDIN_URL = import.meta.env.VITE_LINKEDIN_URL || "";
+const TELEGRAM_URL = import.meta.env.VITE_TELEGRAM_URL || "";
+
 interface LayoutProps {
   children: ReactNode;
   active?: string;
@@ -75,22 +83,28 @@ export default function Layout({ children, active = "Home" }: LayoutProps) {
 
       <footer className="border-t border-line mt-24">
         <div className="max-w-content mx-auto px-6 md:px-10 py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <p className="text-sm text-slate">
-            Tashkent, Uzbekistan — open to backend &amp; ML roles.
-          </p>
+          <p className="text-sm text-slate">{FOOTER_TEXT}</p>
           <div className="flex items-center gap-5">
-            <a href="mailto:you@example.com" aria-label="Email" className="text-slate hover:text-ink">
-              <Mail size={18} />
-            </a>
-            <a href="https://github.com/dehkonaliev" aria-label="GitHub" className="text-slate hover:text-ink">
-              <FaGithub size={18} />
-            </a>
-            <a href="#" aria-label="LinkedIn" className="text-slate hover:text-ink">
-              <FaLinkedin size={18} />
-            </a>
-            <a href="#" aria-label="Telegram" className="text-slate hover:text-ink">
-              <FaTelegram size={18} />
-            </a>
+            {EMAIL && (
+              <a href={`mailto:${EMAIL}`} aria-label="Email" className="text-slate hover:text-ink">
+                <Mail size={18} />
+              </a>
+            )}
+            {GITHUB_URL && (
+              <a href={GITHUB_URL} aria-label="GitHub" className="text-slate hover:text-ink">
+                <FaGithub size={18} />
+              </a>
+            )}
+            {LINKEDIN_URL && (
+              <a href={LINKEDIN_URL} aria-label="LinkedIn" className="text-slate hover:text-ink">
+                <FaLinkedin size={18} />
+              </a>
+            )}
+            {TELEGRAM_URL && (
+              <a href={TELEGRAM_URL} aria-label="Telegram" className="text-slate hover:text-ink">
+                <FaTelegram size={18} />
+              </a>
+            )}
           </div>
         </div>
       </footer>
